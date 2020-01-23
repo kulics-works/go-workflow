@@ -1,30 +1,39 @@
 package workflow
 
 type syncWorkflow struct {
-	missions []Workflow // 里程碑队列，里程碑按同步顺序执行
+	works []Workflow // 里程碑队列，里程碑按同步顺序执行
+	name  string
 }
 
-func NewSyncWorkflow() syncWorkflow {
-	return syncWorkflow{}
-}
-
-func (me syncWorkflow) MissionLength() int {
-	return len(me.missions)
-}
-
-func (me syncWorkflow) AddMission(mt ...Workflow) syncWorkflow {
-	me.missions = append(me.missions, mt...)
+func NewSyncWorkflow(wk ...Workflow) *syncWorkflow {
+	me := &syncWorkflow{}
+	for _, v := range wk {
+		me.Add(v)
+	}
 	return me
 }
 
-func (me *syncWorkflow) ClearMission() {
-	me.missions = nil
+func (me *syncWorkflow) Name() string {
+	return me.name
 }
 
-func (me syncWorkflow) Run() error {
-	for _, mt := range me.missions {
-		if err := mt.Run(); err != nil {
-			return err
+func (me *syncWorkflow) Length() int {
+	return len(me.works)
+}
+
+func (me *syncWorkflow) Add(wk ...Workflow) *syncWorkflow {
+	me.works = append(me.works, wk...)
+	return me
+}
+
+func (me *syncWorkflow) Clear() {
+	me.works = nil
+}
+
+func (me *syncWorkflow) Run() []error {
+	for _, mt := range me.works {
+		if errs := mt.Run(); len(errs) != 0 {
+			return errs
 		}
 	}
 	return nil
