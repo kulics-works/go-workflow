@@ -13,15 +13,11 @@ func NewSyncWorkflow(wk ...Workflow) *syncWorkflow {
 	return me
 }
 
-func (me *syncWorkflow) Name() string {
-	return me.name
-}
-
 func (me *syncWorkflow) Length() int {
 	return len(me.works)
 }
 
-func (me *syncWorkflow) Add(wk ...Workflow) *syncWorkflow {
+func (me *syncWorkflow) Add(wk ...Workflow) Workflow {
 	me.works = append(me.works, wk...)
 	return me
 }

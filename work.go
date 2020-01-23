@@ -6,7 +6,6 @@ type Functions = []Function
 type Function = func(i interface{}) error
 
 type work struct {
-	name   string
 	params Parameter
 	exec   Function // 任务函数
 }
@@ -26,12 +25,13 @@ func (me *work) Run() []error {
 	return nil
 }
 
-func (me *work) Name() string {
-	return me.name
-}
-
 func (me *work) Length() int {
 	return 1
+}
+
+// 最小单位，不支持继续添加
+func (me *work) Add(wk ...Workflow) Workflow {
+	return me
 }
 
 func NewWorks(params Parameters, execs Functions) *asyncWorkflow {
